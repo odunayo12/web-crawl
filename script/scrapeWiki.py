@@ -58,14 +58,30 @@ pd.DataFrame(tasty_dish).to_csv(r"../data/german_towns.csv")
 # %%
 daad__soup_bowl = "https://www2.daad.de/deutschland/studienangebote/international-programmes/en/result/?q=&degree%5B%5D=1&degree%5B%5D=2&degree%5B%5D=3&degree%5B%5D=7&degree%5B%5D=5&degree%5B%5D=6&lang%5B%5D=2&lang%5B%5D=4&fos=&cert=&admReq=&scholarshipLC=&scholarshipSC=&langDeAvailable=&langEnAvailable=&lvlEn%5B%5D=&cit%5B%5D=&tyi%5B%5D=&ins%5B%5D=&fee=&bgn%5B%5D=&dur%5B%5D=&dat%5B%5D=&prep_subj%5B%5D=&prep_degree%5B%5D=&sort=4&subjects%5B%5D=&limit=10&offset=&display=list"
 
-
 # %%
+
+
+def make_tasty_soup(url):
+    """
+    takes url and makes a tasty soup from it.
+    """
+    options = Options()
+    options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
+    driver = webdriver.Chrome(options=options)
+    driver.get(url)
+    time.sleep(3)
+    page = driver.page_source
+    driver.quit()
+    soup = BeautifulSoup(page, 'html.parser')
+    return soup
+# %%
+
 
 def delicious_soup(page_range, url):
     """
-    docstring
+    souped_page is an empty array
     """
-    souped_page = []
     for target_list in page_range:
         split_url = url.rsplit("&display", 1)
         # +"{"+"}"+"&display"+
@@ -73,17 +89,8 @@ def delicious_soup(page_range, url):
         #parsed_url = f"" + (split_url[0] + "{" + str(target_list)+"}" + "&display" + split_url[1])
         print(f"Scrapping: page {int(target_list/10 + 1)}")
         print(parsed_url)
-        options = Options()
-        options.add_argument('--headless')
-        options.add_argument('--disable-gpu')
-        driver = webdriver.Chrome(options=options)
-        driver.get(parsed_url)
-        time.sleep(15)
-        page = driver.page_source
-        driver.quit()
-        soup = BeautifulSoup(page, 'html.parser')
-        souped_page.append(soup)
-    # return soup
+
+# %%
 
 
 # %%
@@ -123,67 +130,78 @@ for test in test_soup.findAll("div", {"class": "c-result-list__content c-masonry
 #                                            columns=["course_type", "course_name", "course_link"])
 # %%
 # Masters degree
+
 masters_page_range = list(range(0, 21, 10))
+masters_souped_page = []
 #target_list = ""
 masters_url = f"https://www2.daad.de/deutschland/studienangebote/international-programmes/en/result/?q=&degree%5B%5D=2&fos=&cert=&admReq=&scholarshipLC=&scholarshipSC=&langDeAvailable=&langEnAvailable=&lang%5B%5D=&cit%5B%5D=&tyi%5B%5D=&ins%5B%5D=&fee=&bgn%5B%5D=&dur%5B%5D=&prep_subj%5B%5D=&prep_degree%5B%5D=&sort=4&subjects%5B%5D=&limit=10&offset=&display=list"
-masters_soup = delicious_soup(masters_page_range, masters_url)
+
+for pages in masters_page_range:
+    split_url = masters_url.rsplit("&display", 1)
+    parsed_url = f"{split_url[0]}{str(pages)}&display{split_url[1]}"
+    print(f"Scrapping: page {int(pages/10 + 1)}")
+    print(parsed_url)
+    watery_soup = make_tasty_soup(parsed_url)
+    masters_souped_page.append(watery_soup)
+# masters_soup = delicious_soup(
+#     masters_page_range, masters_url)
 
 #print(datetime.now() - startTime)
 
 # %%
 csv_data = {}
 item_no = 0
+for masters_soup in masters_souped_page:
+    for d in masters_soup.findAll("div", {"class": "c-result-list__content c-masonry js-result-list-content"}):
+        for soup in d.findAll("div", {"class": "c-ad-carousel c-masonry__item c-masonry__item--result-list mb-5"}):
+            course_type = soup.find(
+                "p", {"class": "c-ad-carousel__course m-0"}).text
+            course_name = soup.find(
+                "span", {"class": "js-course-title d-none d-sm-block"}).text
+            # course_link = soup.find(
+            #     "a", {"class": "list-inline-item mr-0 js-course-detail-link"})['href']
+            # uni_name = soup.find("span", {
+            #                         "class": "c-ad-carousel__subtitle c-ad-carousel__subtitle--small js-course-academy"}).text
+            # uni_city = soup.find("span", {
+            #                         "class": "c-ad-carousel__subtitle c-ad-carousel__subtitle--location c-ad-carousel__subtitle--small"}).text
+            # ul = soup.find("ul", {
+            #                 "class": "c-ad-carousel__data-list c-ad-carousel__data-list--not-colored p-0"})
+            # # contains Short for shortcourse, Phd for Phd and Mas for Masters
+            # relevant_span = ("span", {
+            #                     "class": "c-ad-carousel__data-item c-ad-carousel__data-item--single-line"})
+            # course_type_sereies = str(course_type)
+            # tution_fee = ul.findAll("li")[0].find(relevant_span).text
+            # lang_of_instr = ul.findAll("li")[1].find(relevant_span).text
+            # dura_of_study = ul.findAll("li")[3].find(relevant_span).text
+            slug_ = "https://www2.daad.de"
+            item_no += 1
+            #course_link = slug_+course_link
+            #course_name, course_link
+            csv_data[item_no] = [course_type, course_name]
+        print(csv_data)
+        # print(course_type)
+        # if re.findall(r'Short', course_type_sereies):
+        #     tution_fee = ul.findAll("li")[0].find(relevant_span).text
+        # elif re.findall(r'Ph', course_type_sereies):
+        #     tution_fee = ""
+        # elif re.findall(r'Mas|Bach', course_type_sereies):
+        #     tution_fee = ul.findAll("li")[0].find(relevant_span).text
 
-for d in masters_soup.find("div", {"class": "c-result-list__content c-masonry js-result-list-content"}):
-    for soup in d.findAll("div", {"class": "c-ad-carousel c-masonry__item c-masonry__item--result-list mb-5"}):
-        course_type = soup.find(
-            "p", {"class": "c-ad-carousel__course m-0"}).text
-        course_name = soup.find(
-            "span", {"class": "js-course-title d-none d-sm-block"}).text
-        # course_link = soup.find(
-        #     "a", {"class": "list-inline-item mr-0 js-course-detail-link"})['href']
-        # uni_name = soup.find("span", {
-        #                         "class": "c-ad-carousel__subtitle c-ad-carousel__subtitle--small js-course-academy"}).text
-        # uni_city = soup.find("span", {
-        #                         "class": "c-ad-carousel__subtitle c-ad-carousel__subtitle--location c-ad-carousel__subtitle--small"}).text
-        # ul = soup.find("ul", {
-        #                 "class": "c-ad-carousel__data-list c-ad-carousel__data-list--not-colored p-0"})
-        # # contains Short for shortcourse, Phd for Phd and Mas for Masters
-        # relevant_span = ("span", {
-        #                     "class": "c-ad-carousel__data-item c-ad-carousel__data-item--single-line"})
-        # course_type_sereies = str(course_type)
-        # tution_fee = ul.findAll("li")[0].find(relevant_span).text
-        # lang_of_instr = ul.findAll("li")[1].find(relevant_span).text
-        # dura_of_study = ul.findAll("li")[3].find(relevant_span).text
-        slug_ = "https://www2.daad.de"
-        item_no += 1
-        #course_link = slug_+course_link
-        #course_name, course_link
-        csv_data[item_no] = [course_type, course_name]
-    print(csv_data)
-    # print(course_type)
-    # if re.findall(r'Short', course_type_sereies):
-    #     tution_fee = ul.findAll("li")[0].find(relevant_span).text
-    # elif re.findall(r'Ph', course_type_sereies):
-    #     tution_fee = ""
-    # elif re.findall(r'Mas|Bach', course_type_sereies):
-    #     tution_fee = ul.findAll("li")[0].find(relevant_span).text
+        # # Language of Instruction
+        # if re.findall(r'Short', course_type_sereies):
+        #     lang_of_instr = ul.findAll("li")[1].find(relevant_span).text
+        # elif re.findall(r'Ph', course_type_sereies):
+        #     lang_of_instr = ul.findAll("li")[0].find(relevant_span).text
+        # elif re.findall(r'Mas|Bach', course_type_sereies):
+        #     lang_of_instr = ul.findAll("li")[1].find(relevant_span).text
 
-    # # Language of Instruction
-    # if re.findall(r'Short', course_type_sereies):
-    #     lang_of_instr = ul.findAll("li")[1].find(relevant_span).text
-    # elif re.findall(r'Ph', course_type_sereies):
-    #     lang_of_instr = ul.findAll("li")[0].find(relevant_span).text
-    # elif re.findall(r'Mas|Bach', course_type_sereies):
-    #     lang_of_instr = ul.findAll("li")[1].find(relevant_span).text
-
-    # # Duration of study
-    # if re.findall(r'Short', course_type_sereies):
-    #     dura_of_study = ul.findAll("li")[3].find(relevant_span).text
-    # elif re.findall(r'Ph', course_type_sereies):
-    #     dura_of_study = ul.findAll("li")[2].find(relevant_span).text
-    # elif (re.findall(r'Mas|Bach', course_type_sereies)):
-    #     print(max([len(ul.findAll("li"))]))
+        # # Duration of study
+        # if re.findall(r'Short', course_type_sereies):
+        #     dura_of_study = ul.findAll("li")[3].find(relevant_span).text
+        # elif re.findall(r'Ph', course_type_sereies):
+        #     dura_of_study = ul.findAll("li")[2].find(relevant_span).text
+        # elif (re.findall(r'Mas|Bach', course_type_sereies)):
+        #     print(max([len(ul.findAll("li"))]))
 # %%
 # Bachelors
 bachelor_page_range = list(range(0, 211, 10))
