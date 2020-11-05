@@ -65,7 +65,7 @@ def delicious_soup(page_range, url):
     """
     docstring
     """
-    # souped_page=[]
+    souped_page = []
     for target_list in page_range:
         split_url = url.rsplit("&display", 1)
         # +"{"+"}"+"&display"+
@@ -82,8 +82,8 @@ def delicious_soup(page_range, url):
         page = driver.page_source
         driver.quit()
         soup = BeautifulSoup(page, 'html.parser')
-    # souped_page.append(soup)
-        return soup
+        souped_page.append(soup)
+    # return soup
 
 
 # %%
@@ -134,7 +134,7 @@ masters_soup = delicious_soup(masters_page_range, masters_url)
 csv_data = {}
 item_no = 0
 
-for d in masters_soup.findAll("div", {"class": "c-result-list__content c-masonry js-result-list-content"}):
+for d in masters_soup.find("div", {"class": "c-result-list__content c-masonry js-result-list-content"}):
     for soup in d.findAll("div", {"class": "c-ad-carousel c-masonry__item c-masonry__item--result-list mb-5"}):
         course_type = soup.find(
             "p", {"class": "c-ad-carousel__course m-0"}).text
