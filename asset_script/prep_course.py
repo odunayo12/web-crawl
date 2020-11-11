@@ -104,8 +104,7 @@ for prep_course_soup in prep_course_souped_page:
                                  uni_name,
                                  uni_city,
                                  semester_beginning,
-                                 online_course_elemen,
-                                 ref]
+                                 online_course_elemen]
 
 
 #print(json.dumps(csv_data, indent=2))
@@ -120,5 +119,8 @@ prep_course_csv_df = pd.DataFrame.from_dict(csv_data, orient='index',
 
 prep_course_csv_df.to_csv(r"../data/prep_course_csv_df.csv")
 print(datetime.now() - startTime)
+
+# %%
+csv_data
 
 # %%
