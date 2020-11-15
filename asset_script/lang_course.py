@@ -89,7 +89,7 @@ for lang_course_soup in lang_course_souped_page:
             relevant_h3 = (
                 "h3", {"class": "c-ad-carousel__highlight u-fs-default mb-0 mt-3"})
             scholarship_avail = soup.find(
-                "p", {"class": "c-badge c-badge--bottom"})
+                "span", {"class": "c-badge__text c-badge__text--small"})
 
             if bool(scholarship_avail) == True and len(ul.findAll("li")) > 3:
                 scholarship_avail = "available"
@@ -102,6 +102,7 @@ for lang_course_soup in lang_course_souped_page:
                     "li")[3].findAll(relevant_span)]
                 semester_beginning = ", ".join(
                     [d_dat.text for d_dat in semester_begin])
+                online_course = 0
             elif bool(scholarship_avail) == False and len(ul.findAll("li")) > 3:
                 scholarship_avail = ""
                 course_cost = ul.findAll("li")[0].find(relevant_span).text
@@ -113,6 +114,13 @@ for lang_course_soup in lang_course_souped_page:
                     "li")[3].findAll(relevant_span)]
                 semester_beginning = ", ".join(
                     [d_dat.text for d_dat in semester_begin])
+                online_course = 0
+            elif len(ul.findAll("li")) < 3 and len(online_course.findAll("span")) == 1:
+                lang_of = [lang for lang in ul.findAll(
+                    "li")[1].findAll(relevant_span)]
+                lang_of_instr = ", ".join([lang.text for lang in lang_of])
+                lang_level = ul.findAll("li")[0].find(relevant_span).text
+                online_course = 0
 
             # elif len(ul.findAll("li")) > 3 and "Fin" not in ul.findAll("li")[0].find(relevant_h3):
             #     finan_support = "inquire"
@@ -137,20 +145,24 @@ for lang_course_soup in lang_course_souped_page:
                                  course_cost,
                                  lang_of_instr,
                                  lang_level,
-                                 semester_beginning]
-print(csv_data)
+                                 semester_beginning,
+                                 online_course]
+#print(json.dumps(csv_data, indent=2))
+# print(csv_data)
 # %%
+# TODO: Note that in the data cleaning process 0 is offline else online
 lang_course_csv_df = pd.DataFrame.from_dict(csv_data, orient='index',
                                             columns=["course_type",
                                                      "course_name",
                                                      "course_link",
                                                      "uni_name",
                                                      "uni_city",
-                                                     "finan_support",
+                                                     "scholarship_avail",
+                                                     "course_cost",
                                                      "lang_of_instr",
-                                                     "dura_of_study",
+                                                     "lang_level",
                                                      "semester_beginning",
-                                                     "superv_type"])
+                                                     "online_course"])
 
 lang_course_csv_df.to_csv(r"../data/lang_course_csv_df.csv")
 print(datetime.now() - startTime)
