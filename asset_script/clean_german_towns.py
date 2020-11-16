@@ -36,15 +36,18 @@ wip_raw_town_csv.to_csv("../data/clean_german_towns.csv")
 
 # %%
 # clear trailing spaces
-wip_raw_masters_csv.uni_city = [c.strip()
-                                for c in wip_raw_masters_csv.uni_city]
+# wip_raw_masters_csv.uni_city = [c.strip()
+#                                 for c in wip_raw_masters_csv.uni_city]
 wip_raw_town_csv.german_cities = [c.strip()
                                   for c in wip_raw_town_csv.german_cities]
 # %%
 
-g = merged_master_df = wip_raw_town_csv.merge(
-    wip_raw_masters_csv, left_on="german_cities", right_on="uni_city")
+# g = merged_master_df = wip_raw_town_csv.merge(
+#     wip_raw_masters_csv, left_on="german_cities", right_on="uni_city")
 
+
+g = merged_master_df = wip_raw_masters_csv.merge(
+    wip_raw_town_csv, left_on="german_cities", right_on="german_cities")
 # %%
 g.tail(n=25)
 # %%

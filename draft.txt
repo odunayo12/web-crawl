@@ -1,0 +1,38 @@
+Category: Non Technical Writing
+article on my-study-exp
+	Overview
+		the development of interest in study in germany over time: Compare using the following
+				file:///C:/Users/rotim/Downloads/Table-2.5.1.pdf
+				https://www.datenportal.bmbf.de/portal/en/K25.html
+				file:///C:/Users/rotim/Downloads/Tabelle-2.5.50.pdf
+				file:///C:/Users/rotim/Downloads/Table-2.5.45.pdf
+				file:///C:/Users/rotim/Downloads/Table-2.5.46.pdf
+				file:///C:/Users/rotim/Downloads/Tabelle-2.5.43.pdf
+				file:///C:/Users/rotim/Downloads/Tabelle-2.5.33.pdf
+				https://www.studying-in-germany.org/germany-international-student-statistics/
+		compare favorite study palces to germany
+			Focus
+				Strenght of Germany
+			enhancement
+				get data from Popular websites comparing the schools
+		Highlight the states  with highest study possibilities  
+			Focus
+				Highlight Pros and Cons
+			enhancement
+				in Python: Segment cousrses and discuss the sates with the highest courses to offer. high number of courses may also be an indicator of high student satisfaction
+				D3 map. DO a choropleth showing the nationwide distribution of universities.
+	
+	Nigerian Academic system compared to germany
+		Focus
+			Primary To tert
+		enhancement
+			compare using a mariadb chart
+		Focus
+			Student life in Germany
+				work
+				sponsorship
+				stipends
+	Study pathways in Germany
+		Study Programs
+		
+		Application Timeline
