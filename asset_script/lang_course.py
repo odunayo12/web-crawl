@@ -92,7 +92,7 @@ for lang_course_soup in lang_course_souped_page:
                 "span", {"class": "c-badge__text c-badge__text--small"})
 
             if bool(scholarship_avail) == True and len(ul.findAll("li")) > 3:
-                scholarship_avail = "available"
+                scholarship_avail = 1
                 course_cost = ul.findAll("li")[0].find(relevant_span).text
                 lang_of = [lang for lang in ul.findAll(
                     "li")[1].findAll(relevant_span)]
@@ -104,7 +104,7 @@ for lang_course_soup in lang_course_souped_page:
                     [d_dat.text for d_dat in semester_begin])
                 online_course = 0
             elif bool(scholarship_avail) == False and len(ul.findAll("li")) > 3:
-                scholarship_avail = ""
+                scholarship_avail = 0
                 course_cost = ul.findAll("li")[0].find(relevant_span).text
                 lang_of = [lang for lang in ul.findAll(
                     "li")[1].findAll(relevant_span)]
@@ -115,12 +115,15 @@ for lang_course_soup in lang_course_souped_page:
                 semester_beginning = ", ".join(
                     [d_dat.text for d_dat in semester_begin])
                 online_course = 0
-            elif len(ul.findAll("li")) < 3 and len(online_course.findAll("span")) == 1:
+            elif len(ul.findAll("li")) < 3 and len(online_course.findAll("span")) == 2:
+                scholarship_avail = 0
+                course_cost = ""
+                semester_beginning = ""
                 lang_of = [lang for lang in ul.findAll(
                     "li")[1].findAll(relevant_span)]
                 lang_of_instr = ", ".join([lang.text for lang in lang_of])
                 lang_level = ul.findAll("li")[0].find(relevant_span).text
-                online_course = 0
+                online_course = 1
 
             # elif len(ul.findAll("li")) > 3 and "Fin" not in ul.findAll("li")[0].find(relevant_h3):
             #     finan_support = "inquire"

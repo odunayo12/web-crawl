@@ -113,8 +113,6 @@ def read_data_n_merge(data_file_address):
         missing_in_german_states)
     merge_out_name = merge(data_address, wip_raw_town_csv,
                            left_on="german_cities_dup", right_on="german_cities", how='left')
-    # merge_out_name.to_csv(f"../data/merged_____df.csv")
-    # print(merge_out_name["german_states"].isnull().sum())
     if (merge_out_name["german_states"].isnull().sum()) == 0:
         merge_out_name.to_csv(f"../data/merged_{filename_}_df.csv")
     else:
