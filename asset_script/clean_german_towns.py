@@ -1,13 +1,9 @@
 # %%
 # pyright: reportUnboundVariable=false
-import numpy as np
-from numpy.core.numeric import outer
-from numpy.lib.function_base import select
 import pandas as pd
 import re
 import glob
-
-from pandas.core.reshape.merge import merge
+#from pandas.core.reshape.merge import merge
 
 
 # %%
@@ -47,8 +43,8 @@ def read_data_n_merge(data_file_address, clean_germancities):
     data_address['german_cities_dup'] = data_address['german_cities']
     data_address['german_cities_dup'] = data_address['german_cities_dup'].replace(
         missing_in_german_states)
-    merge_out_name = merge(data_address, clean_germancities,
-                           left_on="german_cities_dup", right_on="german_cities", how='left')
+    merge_out_name = pd.merge(data_address, clean_germancities,
+                              left_on="german_cities_dup", right_on="german_cities", how='left')
     if (merge_out_name["german_states"].isnull().sum()) == 0:
         merge_out_name.to_csv(f"../data/merged_{filename_}_df.csv")
     else:
@@ -102,8 +98,8 @@ wip_raw_bachelors_csv['german_cities_dup'] = wip_raw_bachelors_csv['german_citie
 wip_raw_bachelors_csv['german_cities_dup'] = wip_raw_bachelors_csv['german_cities_dup'].replace(
     missing_in_german_states)
 # %%
-g = merged_bachelors_df = merge(wip_raw_bachelors_csv, wip_raw_town_csv,
-                                left_on="german_cities_dup", right_on="german_cities", how='left')
+g = merged_bachelors_df = pd.merge(wip_raw_bachelors_csv, wip_raw_town_csv,
+                                   left_on="german_cities_dup", right_on="german_cities", how='left')
 # %%
 # %%
 print("wip_raw_masters_csv dimensions: {}".format(wip_raw_bachelors_csv.shape))
@@ -131,7 +127,7 @@ all_df = [pd.read_csv(file_) for file_ in files_dir]
 all_to_merge = [{f"{file_.rsplit(slash_, 1)[1]}": pd.read_csv(
     file_).columns} for file_ in files_dir]
 all_to_merge
-all_df[0]
+# all_df[0]
 # %%
 # select needed columns for masters and bachelors dataframe
 bach_n_master = [a[['course_name', 'uni_name',
