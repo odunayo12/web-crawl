@@ -1,3 +1,4 @@
+[![CodeFactor](https://www.codefactor.io/repository/github/odunayo12/web-crawl/badge)](https://www.codefactor.io/repository/github/odunayo12/web-crawl)
 # web-crawl
 
 ```
