@@ -1,5 +1,6 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/odunayo12/web-crawl/badge)](https://www.codefactor.io/repository/github/odunayo12/web-crawl)
 # web-crawl
+This repo. consist of data scraped for analytics need of articles on studying in Germany.
 
 ```
 📂data/
